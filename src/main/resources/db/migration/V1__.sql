@@ -55,3 +55,11 @@ CREATE TABLE users
 );
 
 INSERT INTO users(user_name, first_name, last_name, salt, hash) VALUES ('yuta', 'yuta', 'sato', 'KSjCSUyOce', 'acf604ab02f19d1e15ed9ba51ddd82ddf0093a399ba3674a3647f3cc7ac1594c');
+
+CREATE TABLE sessions
+(
+    user_id     BIGINT NOT NULL,
+    session_id  NCHAR(16) NOT NULL,
+    user_name   VARCHAR(255) NOT NULL,
+    CONSTRAINT pk_sessions PRIMARY KEY (user_id)
+);

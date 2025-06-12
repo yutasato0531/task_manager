@@ -14,17 +14,23 @@ function Operation(props) {
     props.setNewTaskModal('block');
   }
 
-  function loginLogout() {
+  async function loginLogout() {
     console.log(props.loginButton);
     if(props.loginButton === 'Log out'){
-      props.setUserName('');
-      props.setUserId('');
-      props.setTaskList([]);
-      props.setUserTasks([]);
-      
-      props.setLoginButton('Log in')
+        await fetch(`sessions/${props.userId}`, {
+            method:'DELETE',
+        })
+        console.log(document.cookie)
+        document.cookie = "sessionId=; max-age=0";
+
+        props.setUserName('');
+        props.setUserId('');
+        props.setTaskList([]);
+        props.setUserTasks([]);
+
+        props.setLoginButton('Log in')
     }else{
-      props.setLoginModal('block')
+        props.setLoginModal('block')
     }
   }
 

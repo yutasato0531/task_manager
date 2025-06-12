@@ -1,8 +1,6 @@
 package com.example.task_manager
 
-import com.fasterxml.jackson.annotation.Nulls
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.security.MessageDigest
@@ -60,16 +58,14 @@ class UsersController(
     }
 
     @PostMapping("/users/login")
-    fun login(@RequestBody req: LoginRequest): String {
-        print(req)
+    fun login(@RequestBody req: LoginRequest): Long? {
         val loginUser: List<UsersEntity> = repository.findAll().filter { it.userName == req.userName }.toList()
         val requestedHash = generateSha256Hash(req.password + loginUser[0].salt)
-        print(requestedHash)
 
         if (requestedHash == loginUser[0].hash) {
-            return "success"
+            return loginUser[0].userId
         } else {
-            return "failed"
+            return 0
         }
     }
 

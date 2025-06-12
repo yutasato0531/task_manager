@@ -190,21 +190,8 @@ function App() {
 
   //パスワードのハッシュを比較してログイン
   async function login() {
-    try {
-      const res = await fetch('/users/get', {
-        method: 'GET',
-        headers: {"Content-Type": "application/json"},
-        });
-      const allUsers = await res.json();
-      console.log(allUsers);
-    } catch(err) {
-      console.error("Error fetching users:", err);
-    }
-
     const userName = refUserName.current.value;
     const password = refPassword.current.value;
-
-    console.log(JSON.stringify({ userName: userName, password: password }))
 
     try{
       const res =await fetch("/users/login",{
@@ -214,28 +201,36 @@ function App() {
         },
         body: JSON.stringify({ userName: userName, password: password }),
       });
-      const state = await res.text();
-      console.log(state);
-        if (state === 'success') {
-          setUserName(userName);
-          const res = await fetch(`users/get/name/${userName}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          const id = await res.text()
-          console.log(id);
-          await setUserId(id)
-          setLoginModal('none');
-          setLoginButton('Log out');
-          console.log(userTasks);
-          await createTaskList(id);
-        } else {
-          setLoginButton('Log in');
-          setAlert('incorrect user name of password');
-          setAlertModal('block');
-        }
+      const id = await res.text();
+
+      if (id !== 0) {
+        setUserId(id)
+        setLoginModal('none');
+        setLoginButton('Log out');
+        console.log(userTasks);
+        await createTaskList(id);
+
+        const res = await fetch('/sessions/cookie', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const sessionId = await res.text();
+
+        await fetch('/sessions', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({sessionId: sessionId, userId: id, userName: userName})
+        })
+
+      } else {
+        setLoginButton('Log in');
+        setAlert('incorrect user name of password');
+        setAlertModal('block');
+      }
     } catch (err) {
       console.log("error")
     }

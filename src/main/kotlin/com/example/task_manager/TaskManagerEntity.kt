@@ -1,18 +1,11 @@
 package com.example.task_manager
 
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import jakarta.persistence.Version
-import org.jetbrains.annotations.NotNull
-import org.springframework.context.annotation.Primary
-import java.time.Month
-import java.time.Year
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "test")
@@ -52,10 +45,10 @@ class TasksEntity(
 )
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "sessions")
 class SessionsEntity(
     @Id
-    var sessionId: Long? = null,
-    var timeStamp: Long? = null,
+    var sessionId: String? = null,
     var userId: Long? = null,
+    var userName: String? = null,
 )

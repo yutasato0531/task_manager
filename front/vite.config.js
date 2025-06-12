@@ -16,6 +16,9 @@ export default defineConfig({
       '/tasks': {
         target: 'http://localhost:8080/',
       },
+      '/sessions': {
+        target: 'http://localhost:8080/',
+      },
     },
   },
 });
