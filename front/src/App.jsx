@@ -123,33 +123,15 @@ function App() {
     }
   }
 
-  //ユーザーリストの生成
-  // const allUsers = [];
-  // function createAllUsers(input) {
-  //   allUsers.splice(0);
-  //   allUsers.push(...input);
-  // }
-  //
-  // async function createUserList() {
-  //   const res= await fetch('/users', {
-  //     method: 'GET',
-  //   });
-  //   const data = await res.json();
-  //   await createAllUsers(data);
-  //   await console.log(allUsers);
-  // }
-  //
-  // createUserList();
-
   //ログインしているユーザーのタスクリストの生成
-  async function createTaskList(name) {
-    console.log(userName);
-    await fetch(`/api/${name}`, {
+  async function createTaskList(id) {
+    console.log(id);
+    const res = await fetch(`/tasks/user_id/${id}`, {
       method: 'GET',
-    })
-      .then((res) => res.text())
-      .then((data) => setUserTasks(JSON.parse(data)));
-    console.log('user_name', name, 'tasks', userTasks);
+    });
+    const tasks = await res.json();
+    await setUserTasks(tasks);
+    console.log(tasks);
   }
 
   //新しいタスクの追加
@@ -158,9 +140,10 @@ function App() {
       setAlert('user or task is not defined');
       setNewTaskModal('none');
       setAlertModal('block');
+      return;
     }
     const taskObj = {
-      user_id: userId,
+      userId: userId,
       year: refYear.current.value,
       month: refMonth.current.value,
       date: refDate.current.value,
@@ -169,28 +152,24 @@ function App() {
       task: refNewTask.current.value,
     };
     console.log(taskObj);
-    await fetch(`/api`, {
+    await fetch(`/tasks`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(taskObj),
-    })
-      .then((res) => res.text())
-      .then((data) => console.log(JSON.parse(data)));
-    createTaskList(userName);
+    });
+    await createTaskList(userId)
     clearRefInput();
     setNewTaskModal('none');
   }
 
+
+
   //パスワードのハッシュを比較してログイン
   async function login() {
-    // console.log("allUsers", allUsers);
-    // const user = allUsers.filter(
-    //   (user) => user.userName === refUserName.current.value
-    // );
     try {
-      const res = await fetch('http://localhost:8080/users/get', {
+      const res = await fetch('/users/get', {
         method: 'GET',
         headers: {"Content-Type": "application/json"},
         });
@@ -203,29 +182,42 @@ function App() {
     const userName = refUserName.current.value;
     const password = refPassword.current.value;
 
-    await fetch(`/api/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userName: userName, password: password }),
-    })
-      .then((res) => res.text())
-      .then((state) => {
-        if (state === 'successful') {
+    console.log(JSON.stringify({ userName: userName, password: password }))
+
+    try{
+      const res =await fetch("/users/login",{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userName: userName, password: password }),
+      });
+      const state = await res.text();
+      console.log(state);
+        if (state === 'success') {
           setUserName(userName);
-          setUserId(user[0].id);
+          const res = await fetch(`users/get/name/${userName}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const id = await res.text()
+          console.log(id);
+          await setUserId(id)
           setLoginModal('none');
           setLoginButton('Log out');
-          console.log(userName, user[0].id);
           console.log(userTasks);
-          createTaskList(userName);
+          await createTaskList(id);
         } else {
           setLoginButton('Log in');
           setAlert('incorrect user name of password');
           setAlertModal('block');
         }
-      });
+    } catch (err) {
+      console.log("error")
+    }
+
     clearRefInput();
     setLoginModal('none');
   }
@@ -350,13 +342,16 @@ function App() {
           >
             &times;
           </span>
-          <h3>Log in</h3>
+          <h3>Login/Signup</h3>
           <div style={{ textAlign: 'left', marginLeft: 80, marginBottom: 30 }}>
             <h4 style={{ marginBottom: 0 }}>User name</h4>
             <input ref={refUserName}></input>
             <h4 style={{ marginBottom: 0 }}>Password</h4>
             <input ref={refPassword} type="password"></input>
             <button style={{ marginTop: 30, marginLeft: 30 }} onClick={login}>
+              Log in
+            </button>
+            <button style={{ marginTop: 30, marginLeft: 30 }} onClick={signup}>
               Log in
             </button>
           </div>

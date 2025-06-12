@@ -76,8 +76,8 @@ function Calendar(props) {
                 {prevDayCount}
                 <br />
                   {month === 0
-                    ? countDayryTask(currentYear - 1, 12, prevDayCount)
-                    : countDayryTask(currentYear - 1, month, prevDayCount)}
+                    ? countDailyTask(currentYear - 1, 12, prevDayCount)
+                    : countDailyTask(currentYear - 1, month, prevDayCount)}
               </a>
             </td>
           );
@@ -97,8 +97,8 @@ function Calendar(props) {
                 {nextMonthDayCount}
                 <br />
                   {month === 11
-                    ? countDayryTask(currentYear + 1, 1, nextMonthDayCount)
-                    : countDayryTask(currentYear + 1, month, nextMonthDayCount)}
+                    ? countDailyTask(currentYear + 1, 1, nextMonthDayCount)
+                    : countDailyTask(currentYear + 1, month, nextMonthDayCount)}
               </a>
             </td>
           );
@@ -118,7 +118,7 @@ function Calendar(props) {
                 <a className="todayA" href="#">
                   {dayCount}
                   <br />
-                  {countDayryTask(currentYear, month + 1, day)}
+                  {countDailyTask(currentYear, month + 1, day)}
                 </a>
               </td>
             );
@@ -132,7 +132,7 @@ function Calendar(props) {
                 <a className="daysA" href="#">
                   {dayCount}
                   <br />
-                  {countDayryTask(currentYear, month + 1, day)}
+                  {countDailyTask(currentYear, month + 1, day)}
                 </a>
               </td>
             );
@@ -151,16 +151,16 @@ function Calendar(props) {
   createDays(props.month, props.year);
 
   //デイリータスクの件数カウント
-  function countDayryTask(year, month, date) {
-    const countTaskas = props.userTasks.filter(
-      (task) => task.year == year && task.month == month && task.date == date
+  function countDailyTask(year, month, date) {
+    const countTasks = props.userTasks.filter(
+      (task) => task.year === year && task.month === month && task.date === date
     ).length;
-    if(countTaskas === 0) {
+    if(countTasks === 0) {
       return <span style={{fontSize: 15, color: 'gray'}}>no task</span>;
-    }else if(countTaskas === 1){
-      return <u style={{fontSize: 15}}>{countTaskas} task</u>;
+    }else if(countTasks === 1){
+      return <u style={{fontSize: 15}}>{countTasks} task</u>;
     }else{
-      return <u style={{fontSize: 15}}>{countTaskas} tasks</u>;
+      return <u style={{fontSize: 15}}>{countTasks} tasks</u>;
     }
   }
 

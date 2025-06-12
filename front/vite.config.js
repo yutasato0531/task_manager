@@ -10,7 +10,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': {
+      '/users': {
+        target: 'http://localhost:8080/',
+      },
+      '/tasks': {
         target: 'http://localhost:8080/',
       },
     },
