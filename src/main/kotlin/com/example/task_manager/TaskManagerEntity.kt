@@ -3,6 +3,7 @@ package com.example.task_manager
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
@@ -26,32 +27,35 @@ class TestEntity(
 @Table(name = "users")
 class UsersEntity(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var userId: Long? = null,
     var userName: String? = null,
     var firstName: String,
     var lastName: String,
     var salt: String? = null,
     var hash: String? = null,
-
-    @Version
-    var version: Int? = null
 )
 
 @Entity
 @Table(name = "tasks")
 class TasksEntity(
-//    @ManyToOne
-//    @JoinColumn(name = "userId", referencedColumnName = "userId", table =  "users")
-//    var users: UsersEntity,
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var taskId: Long? = null,
+    var userId: Long? = null,
     var task: String,
     var year: Int?=null,
     var month: Int?=null,
     var date: Int?=null,
     var hour: Int?=null,
     var minute: Int?=null,
+)
+
+@Entity
+@Table(name = "tasks")
+class SessionsEntity(
+    @Id
+    var sessionId: Long? = null,
+    var timeStamp: Long? = null,
+    var userId: Long? = null,
 )

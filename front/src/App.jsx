@@ -164,7 +164,29 @@ function App() {
     setNewTaskModal('none');
   }
 
+  //サインアップしてアカウントを新規作成
+  async function signup(){
+    const userName = refUserName.current.value;
+    const password = refPassword.current.value;
 
+    const userObj = {userName: userName, firstName: '', lastName: '', pass: password}
+
+    try {
+      const res = await fetch('/users/post', {
+        method: 'POST',
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(userObj),
+      });
+      console.log('signup is success')
+      setAlert('Signup successfull');
+      setAlertModal('block');
+    }catch (err) {
+      console.log('signup is failed', err)
+    }
+
+    clearRefInput();
+    setLoginModal('none');
+  }
 
   //パスワードのハッシュを比較してログイン
   async function login() {
@@ -349,10 +371,10 @@ function App() {
             <h4 style={{ marginBottom: 0 }}>Password</h4>
             <input ref={refPassword} type="password"></input>
             <button style={{ marginTop: 30, marginLeft: 30 }} onClick={login}>
-              Log in
+              Login
             </button>
             <button style={{ marginTop: 30, marginLeft: 30 }} onClick={signup}>
-              Log in
+              Signup
             </button>
           </div>
         </div>

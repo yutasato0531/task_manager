@@ -36,7 +36,7 @@ class TaskManagerApplicationTasks(
 
 	@Test
 	fun `POSTリクエストはOKステータスを返す`() {
-		val req = TasksRequest("task", 2025, 6, 11, 18, 30)
+		val req = TasksRequest(1, "task", 2025, 6, 11, 18, 30)
 		val response = restTemplate.postForEntity("http://localhost:$port/tasks", req, String::class.java)
 		assertThat(response.statusCode, equalTo(HttpStatus.OK))
 	}
@@ -53,7 +53,7 @@ class TaskManagerApplicationTasks(
 
 	@Test
 	fun `POSTリクエストはuserオブジェクトを格納する`() {
-		val req = TasksRequest("task", 2025, 6, 11, 18, 30)
+		val req = TasksRequest(1, "task", 2025, 6, 11, 18, 30)
 		restTemplate.postForEntity("http://localhost:$port/tasks", req, String::class.java)
 
 		val res = restTemplate.getForEntity("http://localhost:$port/tasks", Array<TasksEntity>::class.java)
@@ -67,13 +67,13 @@ class TaskManagerApplicationTasks(
 	@Test
 	fun `特定のuser_idを指定してtask_idとtaskをGETできる`() {
 		// 項目を新規作成する。
-		val req1 = TasksRequest("task1", 2025, 6, 11, 18, 30)
+		val req1 = TasksRequest(1, "task1", 2025, 6, 11, 18, 30)
 		restTemplate.postForEntity("http://localhost:$port/tasks", req1, String::class.java)
-		val req2 = TasksRequest("task2", 2025, 6, 13, 18, 30)
+		val req2 = TasksRequest(2, "task2", 2025, 6, 13, 18, 30)
 		restTemplate.postForEntity("http://localhost:$port/tasks", req2, String::class.java)
 
 		// localhost/todos/$id に GETリクエストを送り、レスポンスを1個の TodoEntity として解釈する。
-		val res = restTemplate.getForEntity("http://localhost:$port/tasks/2", TasksEntity::class.java)
+		val res = restTemplate.getForEntity("http://localhost:$port//tasks/task_id/2", TasksEntity::class.java)
 		val taskById = res.body!!
 
 		// 新規作成したものと内容が一致している。
@@ -84,7 +84,7 @@ class TaskManagerApplicationTasks(
 	@Test
 	fun `存在しないIDでGETするとステータス404を返す`() {
 		// id=999 を指定して GETリクエストを送る。
-		val res = restTemplate.getForEntity("http://localhost:$port/tasks/999", TasksEntity::class.java)
+		val res = restTemplate.getForEntity("http://localhost:$port//tasks/task_id/999", TasksEntity::class.java)
 
 		// レスポンスのステータスコードは NOT_FOUND である。
 		assertThat(res.statusCode, equalTo(HttpStatus.NOT_FOUND))
@@ -93,18 +93,18 @@ class TaskManagerApplicationTasks(
 	@Test
 	fun `DELETEでuser_idを指定して削除できる`() {
 		// 項目を新規作成する。
-		val req1 = TasksRequest("task1", 2025, 6, 11, 18, 30)
+		val req1 = TasksRequest(1, "task1", 2025, 6, 11, 18, 30)
 		restTemplate.postForEntity("http://localhost:$port/tasks", req1, String::class.java)
-		val req2 = TasksRequest("task2", 2025, 6, 13, 18, 30)
+		val req2 = TasksRequest(2, "task2", 2025, 6, 13, 18, 30)
 		restTemplate.postForEntity("http://localhost:$port/tasks", req2, String::class.java)
 
 		// localhost/todos/$id に DELETEリクエストを送る。
 		val id: Int = 2
-		restTemplate.delete("http://localhost:$port/tasks/${id}")
+		restTemplate.delete("http://localhost:$port//tasks/${id}")
 
 		// 再度GETすると、その項目は存在しない (削除されている)。
-		val deletedTask = restTemplate.getForEntity("http://localhost:$port/tasks/${id}", TasksEntity::class.java)
-		val res = restTemplate.getForEntity("http://localhost:$port/tasks/1", TasksEntity::class.java)
+		val deletedTask = restTemplate.getForEntity("http://localhost:$port//tasks/task_id/${id}", TasksEntity::class.java)
+		val res = restTemplate.getForEntity("http://localhost:$port//tasks/task_id/1", TasksEntity::class.java)
 		val task = res.body!!
 
 		assertThat(deletedTask.statusCode, equalTo(HttpStatus.NOT_FOUND))

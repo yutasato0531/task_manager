@@ -75,18 +75,18 @@ class TaskManagerApplicationUsers(
 		restTemplate.postForEntity("http://localhost:$port/users/post", req2, String::class.java)
 
 		// localhost/todos/$id に GETリクエストを送り、レスポンスを1個の TodoEntity として解釈する。
-		val res = restTemplate.getForEntity("http://localhost:$port/users/get/2", UsersEntity::class.java)
+		val res = restTemplate.getForEntity("http://localhost:$port/users//get/id/2", UsersEntity::class.java)
 		val userById = res.body!!
 
 		// 新規作成したものと内容が一致している。
 		assertThat(userById.userId, equalTo(2))
-		assertThat(userById.userName, equalTo("shigarami"))
+		assertThat(userById.userName, equalTo("yuta"))
 	}
 
 	@Test
 	fun `存在しないIDでGETするとステータス404を返す`() {
 		// id=999 を指定して GETリクエストを送る。
-		val res = restTemplate.getForEntity("http://localhost:$port/users/get/999", UsersEntity::class.java)
+		val res = restTemplate.getForEntity("http://localhost:$port/users//get/id/999", UsersEntity::class.java)
 
 		// レスポンスのステータスコードは NOT_FOUND である。
 		assertThat(res.statusCode, equalTo(HttpStatus.NOT_FOUND))
@@ -105,7 +105,7 @@ class TaskManagerApplicationUsers(
 		restTemplate.delete("http://localhost:$port/users/delete/${id}")
 
 		// 再度GETすると、その項目は存在しない (削除されている)。
-		val res = restTemplate.getForEntity("http://localhost:$port/users/get/${id}", UsersEntity::class.java)
+		val res = restTemplate.getForEntity("http://localhost:$port/users//get/id/${id}", UsersEntity::class.java)
 
 		assertThat(res.statusCode, equalTo(HttpStatus.NOT_FOUND))
 	}
