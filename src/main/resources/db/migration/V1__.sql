@@ -50,7 +50,6 @@ CREATE TABLE users
     last_name  VARCHAR(255),
     salt       VARCHAR(255),
     hash       VARCHAR(255),
-    version    INTEGER,
     CONSTRAINT pk_users PRIMARY KEY (user_id)
 );
 

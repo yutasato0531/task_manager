@@ -269,7 +269,7 @@ function App() {
   return (
     <>
       {/* タイトルの描画 */}
-      <span style={{ fontSize: 40, marginLeft: 350 }}>Simple scheduler</span>
+      <span style={{ fontSize: 40, marginLeft: 350 }}>Task manager</span>
       <span style={{ marginLeft: 250, marginRight: 0, fontSize: 20 }}>
         user:{userName}
       </span>
