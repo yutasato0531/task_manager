@@ -20,6 +20,7 @@ class SessionsController(
         cookie.setSecure(false)
         cookie.setHttpOnly(false)
         cookie.setMaxAge(60 * 60) // expires in 1 hour
+        cookie.path = "/"
         response.addCookie(cookie)
         return sessionId
     }
@@ -27,6 +28,7 @@ class SessionsController(
     @PostMapping("/sessions")
     fun setSession(@RequestBody request: SessionsRequest){
         val entity = SessionsEntity(sessionId = request.sessionId , userId = request.userId, userName = request.userName)
+
         repository.save(entity)
     }
 
@@ -35,5 +37,17 @@ class SessionsController(
         repository.deleteById(userId)
         print("Sessions deleted")
     }
+
+    @GetMapping("/sessions/{sessionIdInCookie}")
+        fun getSession(@PathVariable sessionIdInCookie: String): SessionsEntity{
+            val session = repository.findAll().filter {  it.sessionId == sessionIdInCookie }.toList()
+            if (!session.isEmpty()){
+                val entity = SessionsEntity(userId = session[0].userId, sessionId = sessionIdInCookie, userName = session[0].userName)
+                return entity
+            }else{
+                val entity = SessionsEntity(userId = 0,sessionId = "", userName = "")
+                return entity
+            }
+        }
 
 }

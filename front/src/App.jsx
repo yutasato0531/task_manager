@@ -33,9 +33,30 @@ function App() {
   const refPassword = useRef();
 
   //Appがマウントされた時にログイン画面のモーダルを表示
-  useEffect(() => {
-    setLoginModal('block');
+  useEffect( () => {
+    sessionCheck()
   }, []);
+
+  //セッション有無確認
+  async function sessionCheck() {
+    const sessionIdInCookie = document.cookie
+        .split(';')
+        .find(row => row.startsWith("sessionId"))
+        .split('=')[1];
+
+    if(sessionIdInCookie){
+      const res =await fetch(`sessions/${sessionIdInCookie}`,{
+        method: 'GET',
+      })
+      const data = await res.json();
+
+      setUserId(data.userId);
+      setLoginButton('Log out');
+      await createTaskList(data.userId);
+    }else {
+      setLoginModal('block');
+    }
+  }
 
   //年、月、日、時、分の選択肢生成
   const optionOfYear = [];
@@ -264,6 +285,7 @@ function App() {
         loginButton={loginButton}
         setLoginButton={setLoginButton}
         setUserName={setUserName}
+        userId={userId}
         setUserId={setUserId}
         setTaskList={setDayryTaskList}
         setUserTasks={setUserTasks}

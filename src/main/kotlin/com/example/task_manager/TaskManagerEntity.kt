@@ -48,7 +48,7 @@ class TasksEntity(
 @Table(name = "sessions")
 class SessionsEntity(
     @Id
-    var sessionId: String? = null,
     var userId: Long? = null,
+    var sessionId: String? = null,
     var userName: String? = null,
 )
