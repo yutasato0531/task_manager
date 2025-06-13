@@ -60,6 +60,11 @@ class UsersController(
     @PostMapping("/users/login")
     fun login(@RequestBody req: LoginRequest): Long? {
         val loginUser: List<UsersEntity> = repository.findAll().filter { it.userName == req.userName }.toList()
+
+        if(loginUser.isEmpty()) {
+            return 0
+        }
+
         val requestedHash = generateSha256Hash(req.password + loginUser[0].salt)
 
         if (requestedHash == loginUser[0].hash) {

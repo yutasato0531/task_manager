@@ -224,11 +224,14 @@ function App() {
       });
       const id = await res.text();
 
-      if (id !== 0) {
+      console.log('id', id);
+
+      if (id !== "0") {
         setUserId(id)
         setLoginModal('none');
         setLoginButton('Log out');
         console.log(userTasks);
+
         await createTaskList(id);
 
         const res = await fetch('/sessions/cookie', {
